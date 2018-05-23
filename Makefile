@@ -1,2 +1,2 @@
 all:
-	gcc -Wall -g -O0 main.c -o main -lm
+	gcc -Wall -g -O0 *.c -o main -lm
