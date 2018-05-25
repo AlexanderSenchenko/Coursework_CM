@@ -7,7 +7,7 @@
 #include "Lagrange.h"
 
 float out_d1 = 0;
-float eps = 1E-2;
+float eps = 1E-4;
 
 float d2f(float x, float y, float d1, float d2);
 float Method_half_division(float a, float b, float x, float y, float d1);
@@ -15,7 +15,7 @@ float f(float x, float y, float d1);
 float RungeKutt2_time(float x0, float x1, float h, float y, float d1);
 float ShootingMethod(float x0, float x1, float y0, float y1, float h);
 float DoubleCounting(float x0, float x1, float y0, float y1, float h);
-float* DoubleCountingRunge(float *X, int n, float h, float x0, float y0, float d1);
+float* DoubleCountingRunge(float *X, int n, float h, float x0, float x1, float y0, float d1);
 
 float NIntegr(float a, float b, float y0, float d1);
 
@@ -307,3 +307,63 @@ float NIntegr(float a, float b, float y0, float d1);
 
 // 	return 0;
 // }
+
+		// if (k == 2) {
+		// 	printf("Write Y0 and Y1\n");
+		// 	printf("n = %d\n", n2);
+		// 	printf("h = %f\n", h1);
+		// 	for (int i = 0; i < n2; i++) {
+		// 	for (float i = 0; i < x1; i += h1) {
+		// 		Xt0[i] = h1 * i;
+		// 		Yt0[i] = RungeKutt2_time(x0, Xt0[i], h1, y0, d1);
+				
+		// 		printf("X[%d] %f\t", i, Xt0[i]);
+		// 		printf("Y[%d] %f\t", i, Yt0[i]);
+		// 		printf("Y` %f\n", out_d1);
+		// 	}
+		// 	// return 0;	
+		// 	n2 = n2 * 2 - 1;
+		// 	h1 = h1 / 2;
+		// 	printf("\n");
+		// 	printf("n = %d\n", n2);
+		// 	printf("h = %f\n", h1);
+		// 	for (int i = 0; i < n2; i++) {
+		// 		Xt1[i] = h1 * i;
+		// 		Yt1[i] = RungeKutt2_time(x0, Xt1[i], h1, y0, d1);
+				
+		// 		printf("X[%d] %f\t", i, Xt1[i]);
+		// 		printf("Y[%d] %f\t", i, Yt1[i]);
+		// 		printf("Y` %f\n", out_d1);
+		// 	}
+		// 	printf("\n");
+		// 	return 0;
+		// 	k = 1;
+		// 	n2 *= 2;
+		// 	h1 = 1 / n2;
+		// } else if (k == 0) {
+		// 	printf("Write Y0\n");
+		// 	printf("n = %d\n", n2);
+		// 	printf("h = %f\n", h1);
+		// 	for (int i = 0; i < n2; i++) {
+		// 		Xt0[i] = h1 * i;
+		// 		Yt0[i] = RungeKutt2_time(x0, Xt0[i], h1, y0, d1);
+				
+		// 		printf("X[%d] %f\t", i, Xt0[i]);
+		// 		printf("Y[%d] %f\t", i, Yt0[i]);
+		// 		printf("Y` %f\n", out_d1);
+		// 	}
+		// 	printf("\n");
+		// } else {
+		// 	printf("Write Y1\n");
+		// 	printf("n = %d\n", n2);
+		// 	printf("h = %f\n", h1);
+		// 	for (int i = 0; i < n2; i++) {
+		// 		Xt1[i] = h1 * i;
+		// 		Yt1[i] = RungeKutt2_time(x0, Xt1[i], h1, y0, d1);
+				
+		// 		printf("X[%d] %f\t", i, Xt1[i]);
+		// 		printf("Y[%d] %f\t", i, Yt1[i]);
+		// 		printf("Y` %f\n", out_d1);
+		// 	}
+		// 	printf("\n");
+		// }

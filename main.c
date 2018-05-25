@@ -93,7 +93,7 @@ float DoubleCounting(float x0, float x1, float y0, float y1, float h)
 	return d1[k];
 }
 
-float* DoubleCountingRunge(float *X, int n, float h, float x0, float y0, float d1)
+float* DoubleCountingRunge(float *X, int n, float h, float x0, float x1, float y0, float d1)
 {
 	int n1 = n;
 	int exit = 1, k = 0;
@@ -239,7 +239,7 @@ int main()
 	for (int i = 0; i < n; i++)
 		X[i] = h * i;
 
-	float *Y = DoubleCountingRunge(X, n, h, x0, y0, d1);
+	float *Y = DoubleCountingRunge(X, n, h, x0, x1, y0, d1);
 	if (Y == NULL) {
 		printf("kek\n");
 		return 0;
