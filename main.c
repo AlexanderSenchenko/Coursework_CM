@@ -28,7 +28,6 @@ float f(float x, float y, float d1)
 		fa = d2f(x, y, d1, a--);
 		fb = d2f(x, y, d1, b++);
 	} while (fa * fb > 0);
-	// return ChordsMethod(a, b, x, y, d1);
 	return Method_half_division(a, b, x, y, d1);
 }
 
@@ -43,10 +42,10 @@ float RungeKutt2_time(float x0, float x1, float h, float y, float d1)
 		d1 += h * f(x + h / 2, yt, d1t);
 	}
 
-	h = x1 - x;
-	yt = y + (h / 2) * d1;
-	d1t = d1 + (h / 2) * f(x0, y, d1);
-	y += h * d1t;
+	// h = x1 - x;
+	// yt = y + (h / 2) * d1;
+	// d1t = d1 + (h / 2) * f(x0, y, d1);
+	// y += h * d1t;
 	// out_d1 = d1 + h * f(x1 + h / 2, yt, d1t);
 	out_d1 = d1;
 
@@ -103,21 +102,21 @@ float* DoubleCountingRunge(float *X, int n, float h, float x0, float y0, float d
 	int exit = 1, k = 0;
 	float h1 = h;
 
-	// float *X = malloc(sizeof(float) * n1);
 	float *Y0 = malloc(sizeof(float) * n1);
 	float *Y1 = malloc(sizeof(float) * n1);
 
 	printf("Write Y0\n");
+	for (int i = 0; i < n1; i++)
+		Y0[i] = RungeKutt2_time(x0, X[i], h1, y0, d1);
+
+	#if 1
 	printf("k = %d\n", k);
 	printf("h1 = %.8f\n", h1);
-	// printf("n = %d\n", n);
-	// printf("n1 = %d\n", n1);
 	for (int i = 0; i < n1; i++) {
-		X[i] = h1 * i;
-		Y0[i] = RungeKutt2_time(x0, X[i], h1, y0, d1);
 		printf("X %f\t", X[i]);
 		printf("Y0 %f\n", Y0[i]);
 	}
+	#endif
 
 	printf("\n");
 
@@ -137,11 +136,8 @@ float* DoubleCountingRunge(float *X, int n, float h, float x0, float y0, float d
 		}
 
 		#if 1
-		// printf("exit = %d\n", exit);
 		printf("k = %d\n", k);
 		printf("h1 = %.8f\n", h1);
-		// printf("n = %d\n", n);
-		// printf("n1 = %d\n", n1);
 		for (int i = 0; i < n; i++) {
 			printf("X %f\t", X[i]);
 			printf("Y0 %f\t", Y0[i]);
@@ -170,7 +166,6 @@ float* DoubleCountingRunge(float *X, int n, float h, float x0, float y0, float d
 				break;
 			}
 		}
-		// Y2 = k == 0 ? Y: Y1;
 		printf("\n");
 	} while (exit);
 
@@ -182,10 +177,15 @@ float* DoubleCountingRunge(float *X, int n, float h, float x0, float y0, float d
 	}
 	#endif
 
-	if (k == 0)
+	if (k == 0) {
+		free(Y1);
 		return Y0;
+	} else {
+		free(Y0);
+		return Y1;
+	}
 
-	return Y1;
+	return NULL;
 }
 
 float NIntegr(float a, float b, float y0, float d1)
@@ -222,88 +222,19 @@ int main()
 {
 	float x0 = 0, x1 = 1, y0 = 3, y1 = 3;
 	float h = 0.2;
+	int n = 6;
 
 	float d1 = DoubleCounting(x0, x1, y0, y1, h);
 
-	int n = 6;
-	// int n1 = n;
-	// int tmp = 1, tmp2 = 0;
-	// float h1 = h;
-
 	float *X = malloc(sizeof(float) * n);
-	// float *Y = malloc(sizeof(float) * n1);
-	// float *Y1 = malloc(sizeof(float) * n1);
-	// float *Y2;
-
-	// printf("Write Y\n");
-	// printf("tmp2 = %d\n", tmp2);
-	// printf("h1 = %.8f\n", h1);
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++)
 		X[i] = h * i;
-		// Y[i] = RungeKutt2_time(x0, X[i], h1, y0, d1);
-		// printf("X %f\t", X[i]);
-		// printf("Y %f\n", Y[i]);
-	}
-
-	// printf("\n");
 
 	float *Y = DoubleCountingRunge(X, n, h, x0, y0, d1);
-	
 	if (Y == NULL) {
 		printf("kek\n");
 		return 0;
 	}
-
-	// float eps = 1E-4;
-	// do {
-	// 	tmp2 ^= 1;
-	// 	h1 /= 2;
-
-	// 	if (tmp2 == 0) {
-	// 		printf("Write Y\n");
-	// 		for (int i = 0; i < n1; i++)
-	// 			Y[i] = RungeKutt2_time(x0, X[i], h1, y0, d1);
-	// 	} else {
-	// 		printf("Write Y1\n");
-	// 		for (int i = 0; i < n1; i++)
-	// 			Y1[i] = RungeKutt2_time(x0, X[i], h1, y0, d1);
-	// 	}
-
-	// 	#if 1
-	// 	// printf("tmp = %d\n", tmp);
-	// 	printf("tmp2 = %d\n", tmp2);
-	// 	printf("h1 = %.8f\n", h1);
-	// 	for (int i = 0; i < n; i++) {
-	// 		printf("X %f\t", X[i]);
-	// 		printf("Y %f\t", Y[i]);
-	// 		printf("Y1 %f\n", Y1[i]);
-	// 	}
-	// 	printf("\n");
-	// 	#endif
-
-	// 	tmp = 0;
-
-	// 	for (int i = 0; i < n1; i++) {
-	// 		printf("%f\n", fabsf(Y[i] - Y1[i]));
-
-	// 		if (fabsf(Y[i] - Y1[i]) > eps) {
-	// 			printf("Break\n");
-	// 			tmp = 1;
-
-	// 			if (tmp2 == 0) {
-	// 				for (int i = 0; i < n1; i++)
-	// 					Y1[i] = 0;
-	// 			} else {
-	// 				for (int i = 0; i < n1; i++)
-	// 					Y[i] = 0;
-	// 			}
-
-	// 			break;
-	// 		}
-	// 	}
-	// 	Y2 = tmp2 == 0 ? Y: Y1;
-	// 	printf("\n");
-	// } while (tmp);
 
 	FILE *res = fopen("res.txt", "w");
 	for (int i = 0; i < n; i++) {
@@ -321,7 +252,7 @@ int main()
 	printf("I = %.3f\n", I);
 
 	free(X);
-	// free(Y);
+	free(Y);
 	// free(Y1);
 
 	return 0;
