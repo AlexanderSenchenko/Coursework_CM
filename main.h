@@ -7,7 +7,7 @@
 #include "Lagrange.h"
 
 float out_d1 = 0;
-double outD1;
+float eps = 1E-2;
 
 float d2f(float x, float y, float d1, float d2);
 float Method_half_division(float a, float b, float x, float y, float d1);

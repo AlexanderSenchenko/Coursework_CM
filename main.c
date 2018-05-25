@@ -42,13 +42,7 @@ float RungeKutt2_time(float x0, float x1, float h, float y, float d1)
 		d1 += h * f(x + h / 2, yt, d1t);
 	}
 
-	// h = x1 - x;
-	// yt = y + (h / 2) * d1;
-	// d1t = d1 + (h / 2) * f(x0, y, d1);
-	// y += h * d1t;
-	// out_d1 = d1 + h * f(x1 + h / 2, yt, d1t);
 	out_d1 = d1;
-
 	return y;
 }
 
@@ -57,6 +51,7 @@ float ShootingMethod(float x0, float x1, float y0, float y1, float h)
 	float a = 1, b = 0;
 	float fa = 0, fb = 0;
 	float eps = 1E-4;
+	// printf("Sh1\n");
 
 	do {
 		fa = RungeKutt2_time(x0, x1, h, y0, a) - y1;
@@ -64,6 +59,7 @@ float ShootingMethod(float x0, float x1, float y0, float y1, float h)
 		a -= h;
 		b += h;
 	} while (fa * fb > 0);
+	// printf("Sh2\n");
 
 	float g = 0;
 	while(fabs(b - a) > eps) {
@@ -76,6 +72,7 @@ float ShootingMethod(float x0, float x1, float y0, float y1, float h)
 			a = g;
 		}
 	}
+	// printf("Sh3\n");
 
 	return (a + b) / 2;
 }
@@ -87,7 +84,7 @@ float DoubleCounting(float x0, float x1, float y0, float y1, float h)
 	float d1[2];
 	int k = 0;
 	for (float h0 = h; delta >= eps; h0 /= 2, k ^= 1) {
-		d1[k] = ShootingMethod(x0, x1, y0, y1, h);
+		d1[k] = ShootingMethod(x0, x1, y0, y1, h0);
 
 		if (h > h0)
 			delta = fabsf(d1[k] - d1[k ^ 1]);
@@ -120,22 +117,33 @@ float* DoubleCountingRunge(float *X, int n, float h, float x0, float y0, float d
 
 	printf("\n");
 
-	float eps = 1E-4;
 	do {
 		k ^= 1;
 		h1 /= 2;
 
 		if (k == 0) {
-			printf("Write Y0\n");
-			for (int i = 0; i < n1; i++)
+			// printf("Write Y0\n");
+			for (int i = 0; i < n1; i++) {
 				Y0[i] = RungeKutt2_time(x0, X[i], h1, y0, d1);
+				printf("X %f\t", X[i]);
+				printf("Y0 %f\t", Y0[i]);
+				printf("Y1 %f\t", Y1[i]);
+				printf("Y` %f\n", out_d1);
+			}
+			printf("\n");
 		} else {
-			printf("Write Y1\n");
-			for (int i = 0; i < n1; i++)
+			// printf("Write Y1\n");
+			for (int i = 0; i < n1; i++) {
 				Y1[i] = RungeKutt2_time(x0, X[i], h1, y0, d1);
+				printf("X %f\t", X[i]);
+				printf("Y0 %f\t", Y0[i]);
+				printf("Y1 %f\t", Y1[i]);
+				printf("Y` %f\n", out_d1);
+			}
+			printf("\n");
 		}
 
-		#if 1
+		#if 0
 		printf("k = %d\n", k);
 		printf("h1 = %.8f\n", h1);
 		for (int i = 0; i < n; i++) {
@@ -224,7 +232,8 @@ int main()
 	float h = 0.2;
 	int n = 6;
 
-	float d1 = DoubleCounting(x0, x1, y0, y1, h);
+	// float d1 = DoubleCounting(x0, x1, y0, y1, h);
+	float d1 = ShootingMethod(x0, x1, y0, y1, h);
 
 	float *X = malloc(sizeof(float) * n);
 	for (int i = 0; i < n; i++)
@@ -253,7 +262,6 @@ int main()
 
 	free(X);
 	free(Y);
-	// free(Y1);
 
 	return 0;
 }
